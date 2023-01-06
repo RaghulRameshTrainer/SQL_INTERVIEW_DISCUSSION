@@ -1,0 +1,168 @@
+USE CUST;
+SELECT * FROM EMPLOYEE WHERE SALARY > (SELECT AVG(salary) FROM EMPLOYEE);
+
+SELECT * FROM EMPLOYEE;
+
+SELECT * FROM EMPLOYEE WHERE empid IN ( SELECT manager_id FROM EMPLOYEE WHERE salary < 200000);
+
+-- Numeric Function -- sum, max, min, count, avg
+-- String Function  -- lower, upper, length, concat, cancat_ws, format, replace, substring, 
+-- Date function  -- day(), month(), year(), date(), date_Add, date_sub, date_diff, to_date, date_format()
+SELECT now();
+SELECT curdate();
+SELECT curtime();
+SELECT current_timestamp();
+
+-- Stored Procedure
+-- Stored Function
+
+-- TCL Transaction Control Language
+
+SELECT * FROM EMPLOYEE;
+
+-- UPDATE EMPLOYEE SET salary=110000;
+-- DELETE FROM EMPLOYEE;
+
+SET sql_safe_updates=0;
+
+SELECT * FROM EMPLOYEE1;
+START TRANSACTION;
+DELETE FROM EMPLOYEE1 WHERE empname='Sakshi';
+-- ROLLBACK;
+commit;
+
+
+START TRANSACTION;
+SELECT * FROM EMPLOYEE1;
+
+SAVEPOINT ageupdate;
+UPDATE EMPLOYEE1 SET experience=15 WHERE empname='Ramya';
+
+savepoint techupdate;
+UPDATE EMPLOYEE1 SET tech='RDMBS' WHERE emp_id=3;
+
+ROLLBACK TO savepoint ageupdate;
+ROLLBACK;
+
+
+-- DCL - Data Control Language
+
+GRANT <access_level> ON TABLE_NAME TO user@localhost;
+
+GRANT SELECT ON EMPLOYEE TO root@localhost;
+GRANT SELECT,UPDATE ON EMPLOYEE TO root@localhost;
+GRANT SELECT,UPDATE,INSERT ON EMPLOYEE TO root@localhost;
+GRANT ALL ON EMPLOYEE TO root@localhost;
+
+REVOKE DELETE ON EMPLOYEE FROM root@localhost;
+
+LOCK TABLES EMPLOYEE READ;
+
+SELECT * FROM EMPLOYEE;
+
+UNLOCK TABLES;
+
+SELECT
+INSERT
+UPDATE
+DELETE
+GRANT 
+CREATE
+ALL
+
+
+CREATE TABLE jan2023(
+id INT primary key,
+name varchar(100) not null
+);
+
+CREATE TABLE 2023_tbl(
+id INT ,
+city varchar(100),
+foreign key (id) references jan2023(id) ON DELETE cascade 
+);
+
+DROP TABLE jan2023;
+
+INSERT INTO jan2023 VALUES(1,'Ram'),(2,'Raja'),(3,'Bala');
+insert into 2023_tbl VALUES(1,'Chennai'),(2,'Bangalore'),(3,'Hyderabad');
+
+SELECT * FROM jan2023;
+DELETE FROM jan2023 WHERE id=3;
+update jan2023 SET id=200 WHERE id=2;
+SELECT * FROM 2023_tbl;
+DELETE FROM 2023_tbl WHERE id=3;
+
+-- DROP TRUNCATE DELETE
+
+CUSTOMER:				TRANSACTION:
+custid, name			transid,custid,prodname,amount
+1    A                    100,1,X,10000
+2    B                    101,2,Y,5000
+3    C                    102,1,Z,2000
+
+SELECT * FROM CUSTOMER WHERE custid NOT IN (SELECT distinct custid FROM transacation_tbl);
+SELECT c.custid, c.name FROM customer c LEFT JOIN transacation_tbl t ON c.custid=t.custid
+WHETE t.transid IS NULL;
+1    A                    100,1,X,10000
+1    A                    102,1,Z,2000
+2    B                    101,2,Y,5000
+3    C                    null,null,null,null
+
+SELECT  1
+HAVING  2
+GROUP BY 3 
+FROM 4 
+WHERE  5
+ORDER BY 6
+1-4-5-3-2-6
+
+VIEW? - Virtual Table
+
+CREATE OR REPLACE VIEW cust_details AS
+SELECT custname FROM CUSTOMER;
+
+SELECT * FROM cust_details;
+
+CREATE OR REPLACE VIEW ind_cust_details AS
+SELECT custname FROM CUSTOMER WHERE country='INDIA';
+
+EMPLOYEE
+	empid, name , salary, mgr_id
+    
+    Write a query to fetch the employee details who are getting salary more than his manager?
+
+SELECT * FROM EMPLOYEE;
+
+SELECT e1.empid, e1.name, e1.salary
+FROM employee e1
+JOIN employee e2
+ON e1.mgr_id = e2.empid
+WHERE e1.salary > e2.salary;
+
+SELECT e1.empname, e1.salary as emp_salary , e2.salary as mgr_salary , e2.empname as mgr_name
+FROM employee e1 join employee e2 ON e1.manager_id=e2.empid WHERE e1.salary>e2.salary;
+
+
+SELECT e1.empid, e1.empname, e1.salary
+FROM employee e1
+WHERE e1.salary > (SELECT e2.salary FROM employee e2 WHERE e1.manager_id = e2.empid);
+
+SELECT e1.empid, e1.empname, e1.salary
+FROM employee e1
+WHERE e1.manager_id IN (SELECT e2.empid FROM employee e2 WHERE e1.salary > e2.salary);
+
+
+customer
+custid, name, age, gender, city
+
+
+ALL MALE RECORDS ARE LOADED AS FEMALE AND VICE VERSA
+TOTALLY 100 CUSTOMER DATA WE HAVE , 50 MALE, 50 FEMALE RECORDS
+
+MALE = MALE_1
+FEMALE = MALE
+MALE_1 FEMALE
+
+UPDATE CUSTOMER
+SET GENDER=CASE WHEN GENDER='MALE' THEN 'FEMALE' ELSE 'MALE';
